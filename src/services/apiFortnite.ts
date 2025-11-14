@@ -1,15 +1,15 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 const API_BASE_URL = 'https://fortnite-api.com/v2';
 
 // Configurar interceptor para logar requisições
 axios.interceptors.request.use(
-  (config) => {
+  (config: InternalAxiosRequestConfig) => {
     console.log('Requisição:', config.method?.toUpperCase(), config.url);
     console.log('Headers:', config.headers);
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     console.error('Erro na requisição:', error);
     return Promise.reject(error);
   }
@@ -17,12 +17,12 @@ axios.interceptors.request.use(
 
 // Configurar interceptor para logar respostas
 axios.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     console.log('Resposta:', response.status, response.config.url);
     console.log('Data:', response.data);
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     console.error('Erro na resposta:', error.response?.status, error.config?.url);
     console.error('Erro completo:', error);
     return Promise.reject(error);

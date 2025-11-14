@@ -20,6 +20,18 @@ export type ShopOffer = {
 	items: CosmeticLite[]
 }
 
+export type PriceInfo = {
+    final: number | null
+    regular: number | null
+    isBundle: boolean
+    offer: ShopOffer | null
+}
+
+export type PurchaseContext = {
+    offer: ShopOffer | null
+    price: number
+}
+
 export type CosmeticsQuery = {
 	search?: string
 	type?: string
