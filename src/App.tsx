@@ -56,6 +56,7 @@ export default function App() {
 	const [authError, setAuthError] = useState<string | null>(null)
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [view, setView] = useState<View>('catalog')
+	const [showAuth, setShowAuth] = useState(false)
 
 	const loadUser = useCallback(async (userId: string) => {
 		setUserLoading(true)
@@ -137,7 +138,10 @@ export default function App() {
 	}, [])
 
 	const purchase = useCallback(async (item: CosmeticLite, ctx: PurchaseContext) => {
-		if (!currentUser) return false
+		if (!currentUser) {
+			setShowAuth(true)
+			return false
+		}
 		setActionError(null)
 		try {
 			const offer = ctx.offer && ctx.offer.items.some((i) => i.id === item.id) ? ctx.offer : null
@@ -158,6 +162,8 @@ export default function App() {
 			return false
 		}
 	}, [currentUser, distributePrice])
+
+	const closeAuth = useCallback(() => setShowAuth(false), [])
 
 	const refund = useCallback(async (recordId: string) => {
 		if (!currentUser) return false
@@ -231,16 +237,7 @@ export default function App() {
 
 	usePeriodicSync(appState)
 
-	if (!currentUser) {
-		return (
-			<AuthScreen
-				onLogin={handleLogin}
-				onRegister={handleRegister}
-				loading={authLoading || userLoading}
-				error={authError}
-			/>
-		)
-	}
+	// Always render the main app; show auth modal when requested
 
 	return (
 		<div className="container">
@@ -262,7 +259,7 @@ export default function App() {
 						/>
 					</p>
 					<div className="chips" style={{ marginTop: 8 }}>
-						<span className="user-badge">Usuário: {currentUser.name}</span>
+						<span className="user-badge">{currentUser ? `Usuário: ${currentUser.name}` : 'Convidado'}</span>
 					</div>
 				</div>
 				<div className="header-actions">
@@ -275,10 +272,10 @@ export default function App() {
 					{view !== 'directory' && (
 						<button
 							className="btn secondary slide-up"
-							onClick={() => setView(view === 'catalog' ? 'profile' : 'catalog')}
+							onClick={() => currentUser ? setView(view === 'catalog' ? 'profile' : 'catalog') : setShowAuth(true)}
 							style={{ animationDelay: '100ms' }}
 						>
-							{view === 'catalog' ? 'Ver meu perfil' : 'Voltar para a loja'}
+							{currentUser ? (view === 'catalog' ? 'Ver meu perfil' : 'Voltar para a loja') : 'Entrar'}
 						</button>
 					)}
 					<button
@@ -288,15 +285,33 @@ export default function App() {
 					>
 						{view === 'directory' ? 'Voltar para a loja' : 'Comunidade'}
 					</button>
-					<button className="btn slide-up" onClick={handleLogout} style={{ animationDelay: '160ms' }}>
-						Sair
-					</button>
+					{currentUser && (
+						<button className="btn slide-up" onClick={handleLogout} style={{ animationDelay: '160ms' }}>
+							Sair
+						</button>
+					)}
 				</div>
 			</header>
 
 			{view === 'catalog' && <CatalogPage app={appState} />}
 			{view === 'profile' && <ProfilePage app={appState} />}
 			{view === 'directory' && <PublicDirectoryPage onBack={() => setView('catalog')} />}
+
+			{showAuth && (
+				<div className="auth-modal" style={{ position: 'fixed', inset: 0, display: 'grid', placeItems: 'center', background: 'rgba(0,0,0,0.5)', zIndex: 60 }}>
+					<div style={{ width: 'min(720px, 96%)', background: 'var(--bg, #fff)', borderRadius: 8, padding: 16 }}>
+						<AuthScreen
+							onLogin={handleLogin}
+							onRegister={handleRegister}
+							loading={authLoading || userLoading}
+							error={authError}
+						/>
+						<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+							<button className="btn secondary" onClick={closeAuth}>Fechar</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }
