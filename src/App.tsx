@@ -298,7 +298,7 @@ export default function App() {
 			{view === 'directory' && <PublicDirectoryPage onBack={() => setView('catalog')} />}
 
 			{showAuth && (
-				<div className="auth-modal" style={{ position: 'fixed', inset: 0, display: 'grid', placeItems: 'center', background: 'rgba(0,0,0,0.5)', zIndex: 60 }}>
+				<div className="auth-modal" style={{ position: 'fixed', inset: 0, display: 'grid', placeItems: 'center', background: 'rgba(0,0,0,0.5)', zIndex: 10050 }}>
 					<div style={{ width: 'min(720px, 96%)', background: 'var(--bg, #fff)', borderRadius: 8, padding: 16 }}>
 						<AuthScreen
 							onLogin={handleLogin}
