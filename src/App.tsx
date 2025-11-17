@@ -87,6 +87,7 @@ export default function App() {
 		setHistory(user.historico ?? [])
 		localStorage.setItem(STORAGE_KEY, user.id)
 		setAuthError(null)
+		setShowAuth(false)
 		setView('catalog')
 	}, [])
 
