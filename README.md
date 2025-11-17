@@ -4,16 +4,16 @@ Aplicação web para listar, filtrar e adquirir cosméticos do Fortnite integran
 
 ## Requisitos
 - Node 18+
-- Backend em execução (porta padrão 4000)
+- Backend disponível (por padrão usamos a API do Vercel)
 
 ## Variáveis de ambiente
 
-- `VITE_API_BASE` (opcional): URL base do backend. Padrão: `http://localhost:4000/api`.
+- `VITE_API_BASE` (opcional): URL base do backend. Padrão: `https://fortnite-backend-sigma.vercel.app/api`.
 
 Exemplo (PowerShell):
 
 ```powershell
-$env:VITE_API_BASE="http://localhost:4000/api"
+$env:VITE_API_BASE="https://fortnite-backend-sigma.vercel.app/api"
 ```
 
 ## Rodando o projeto
